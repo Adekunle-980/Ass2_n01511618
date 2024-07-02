@@ -1,0 +1,20 @@
+<h1>Paginated Gallery of All Files</h1>
+    <ul>
+        {{#each files}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ul>
+
+    <div>
+        {{#if (gt currentPage 1)}}
+        <a href="/gallery-pagination?page={{subtract currentPage 1}}">Previous</a>
+        {{/if}}
+
+        {{#each (range 1 totalPages)}}
+        <a href="/gallery-pagination?page={{this}}">{{this}}</a>
+        {{/each}}
+
+        {{#if (lt currentPage totalPages)}}
+        <a href="/gallery-pagination?page={{add currentPage 1}}">Next</a>
+        {{/if}}
+    </div>
