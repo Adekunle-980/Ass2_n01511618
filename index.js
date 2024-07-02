@@ -90,50 +90,48 @@ app
       .send(`Files uploaded successfully: ${filePaths.join(", ")}`);
   });
 
-  // app.get("/fetch-single", (req, res) => {
-  //   let upload_dir = path.join(__dirname, 'uploads');
+  app.get("/fetch-single", (req, res) => {
+    let upload_dir = path.join(__dirname, "uploads");
   
-  //   // NOTE: This reads the directory, not the file, so think about how you can use this for the assignment
-  //   let uploads = fs.readdirSync(upload_dir);
-  //   console.log(uploads);
-  //   // Add error handling
-  //   if (uploads.length == 0) {
-  //     return res.status(503).send({
-  //       message: "No images",
-  //     });
-  //   }
-  //   let max = uploads.length - 1;
-  //   let min = 0;
+    // NOTE: This reads the directory, not the file, so think about how you can use this for the assignment
+    let uploads = fs.readdirSync(upload_dir);
+    console.log(uploads);
+    // Add error handling
+    if (uploads.length == 0) {
+      return res.status(503).send({
+        message: "No images",
+      });
+    }
+    let max = uploads.length - 1;
+    let min = 0;
   
-  //   let index = Math.round(Math.random() * (max - min) + min);
-  //   let randomImage = uploads[index];
+    let index = Math.round(Math.random() * (max - min) + min);
+    let randomImage = uploads[index];
   
-  //   res.sendFile(path.join(upload_dir, randomImage));
-  // });
+    res.sendFile(path.join(upload_dir, randomImage));
+  });
   
   // we dont need the route anymore, since we can render the page beforehand
   
   function fetchRandomImage() {
-    let uploadDir = path.join(__dirname, 'uploads');
-    let uploads = fs.readdirSync(uploadDir);
+    let upload_dir = path.join(__dirname, "uploads");
+    let uploads = fs.readdirSync(upload_dir);
     if (uploads.length === 0) {
       throw new Error("No images found in the upload directory");
     }
   
     let max = uploads.length - 1;
     let min = 0;
-    let index = Math.floor(Math.random() * (max - min + 1) + min); // Use Math.floor for random integer
+    let index = Math.round(Math.random() * (max - min) + min);
     let randomImage = uploads[index];
   
-    return path.join('uploads', randomImage); // Return relative path for rendering
+    return path.join(upload_dir, randomImage);
   }
-  
-  // Route to render a single image
-  app.get('/single', (req, res) => {
+  app.get("/single", (req, res) => {
     try {
       let randomImage = fetchRandomImage();
-      console.log(randomImage);
-      res.render('single', { title: 'Single', file: randomImage });
+      console.log(randomImage)
+      res.render("single", { title: "Single", file: randomImage });
     } catch (error) {
       console.error("Error fetching random image:", error.message);
       res.status(503).send({
@@ -150,6 +148,7 @@ You can rename these routes as you need
 /*multiple: handle a webpage to grab multiple random images from the server
 /fetch-multiple - This route will grab the multiple photos for the webpage multiple
 */
+
 // Function to fetch multiple random images
 function fetchMultipleRandomImages(numberOfImages) {
   let uploadDir = path.join(__dirname, 'uploads');
@@ -174,7 +173,7 @@ app.get('/fetch-multiple', (req, res) => {
     let randomImages = fetchMultipleRandomImages(numberOfImages);
     res.render('fetch-multiple', {
       title: 'Multiple Random Images',
-      images: randomImages
+      files: randomImages
     });
     console.log(randomImages)
   } catch (error) {
@@ -224,6 +223,7 @@ const pagination = require('./middleware/pagination');
 
 app.get('/gallery-pagination', pagination, (req, res) => {
   res.render('gallery-pagination', {
+    title: 'Gallery Pagination',
     files: req.paginatedFiles,
     currentPage: req.currentPage,
     totalPages: req.totalPages
